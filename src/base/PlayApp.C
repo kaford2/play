@@ -1,0 +1,50 @@
+#include "PlayApp.h"
+#include "Moose.h"
+#include "AppFactory.h"
+#include "ModulesApp.h"
+#include "MooseSyntax.h"
+
+template<>
+InputParameters validParams<PlayApp>()
+{
+  InputParameters params = validParams<MooseApp>();
+  return params;
+}
+
+PlayApp::PlayApp(InputParameters parameters) :
+    MooseApp(parameters)
+{
+  Moose::registerObjects(_factory);
+  ModulesApp::registerObjects(_factory);
+  PlayApp::registerObjects(_factory);
+
+  Moose::associateSyntax(_syntax, _action_factory);
+  ModulesApp::associateSyntax(_syntax, _action_factory);
+  PlayApp::associateSyntax(_syntax, _action_factory);
+}
+
+PlayApp::~PlayApp()
+{
+}
+
+// External entry point for dynamic application loading
+extern "C" void PlayApp__registerApps() { PlayApp::registerApps(); }
+void
+PlayApp::registerApps()
+{
+  registerApp(PlayApp);
+}
+
+// External entry point for dynamic object registration
+extern "C" void PlayApp__registerObjects(Factory & factory) { PlayApp::registerObjects(factory); }
+void
+PlayApp::registerObjects(Factory & factory)
+{
+}
+
+// External entry point for dynamic syntax association
+extern "C" void PlayApp__associateSyntax(Syntax & syntax, ActionFactory & action_factory) { PlayApp::associateSyntax(syntax, action_factory); }
+void
+PlayApp::associateSyntax(Syntax & /*syntax*/, ActionFactory & /*action_factory*/)
+{
+}
